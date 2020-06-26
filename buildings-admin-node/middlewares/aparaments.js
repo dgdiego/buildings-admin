@@ -1,61 +1,37 @@
 const Apartament = require('../models/apartament');
+const services = require('../services/apartament-services');
 
 const getAllApartamentsByBuilding = (req, res, next) => {
-    Apartament.getAllApartamentsByBuilding(req.params.idBuilding)
-        .then((Apartaments) => {
-            res.status(200);
-            res.json({
-                Apartaments,
-            });
+    services.getAllApartamentsByBuilding(req.params.idBuilding)
+        .then((result) => {
+            res.status(result.status);
+            res.json(result);
         })
         .catch((error) => {
             next(error);
         });
-
 }
 
 const getApartamentById = (req, res, next) => {
-    Apartament.getApartamentById(req.params.id)
-        .then((Apartament) => {
-            if (Apartament) {
-                res.status(200);
-                res.json({
-                    Apartament,
-                });
-            } else {
-                res.status(404);
-                res.json({
-                    success: false,
-                    message: 'No existe un apartamento con el ID especificado',
-                });
-            }
+    services.getApartamentById(req.params.id)
+        .then((result) => {
+            res.status(result.status);
+            res.json(result);
         })
         .catch((error) => {
             next(error);
         });
-
 }
 
 const createApartament = (req, res, next) => {
-    Apartament.create(req.body)
-        .then((Apartament) => {
-            if (Apartament) {
-                res.status(200);
-                res.json({
-                    Apartament,
-                });
-            } else {
-                res.status(409); //conflict
-                res.json({
-                    success: false,
-                    message: 'Ya existe el apartamento para el edificio'
-                })
-            }
+    services.create(req.body)
+        .then((result) => {
+            res.status(result.status);
+            res.json(result);
         })
         .catch((error) => {
             next(error);
         });
-
 }
 
 module.exports = {

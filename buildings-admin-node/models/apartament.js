@@ -1,4 +1,5 @@
 const db = require('../services/db-connection');
+const Building = require('./building');
 
 const GET_APARTAMENT_BY_ID = 'SELECT * FROM apartaments WHERE id = ?';
 const GET_APARTAMENT_BY_KEY = 'SELECT * FROM apartaments WHERE number = ? AND building_id = ? AND type = ?';
@@ -6,6 +7,8 @@ const GET_ALL_APARTAMENTS_BY_BUILDING = 'SELECT * FROM apartaments WHERE buildin
 const INSERT_APARTAMENT = 'INSERT INTO apartaments SET ?';
 
 class Apartament {
+
+    building = null;
 
     constructor(id, number, building_id, type, state, contribution_type) {
         this.id = id;
@@ -81,34 +84,24 @@ class Apartament {
         return new Promise((resolve, rejected) => {
             const { number, building_id, type, state, contribution_type } = parms;
 
-            this.getApartamentByKey(number, building_id, type)
-                .then((found) => {
-                    if (!found) {
-                        const newApartament = {
-                            number,
-                            building_id,
-                            type,
-                            state,
-                            contribution_type,
-                        };
-                        db.query(INSERT_APARTAMENT, newApartament, (error, results) => {
-                            if (error) {
-                                rejected(error);
-                            } else {
-                                try {
-                                    resolve(new Apartament(results.insertId, number, building_id, type, state, contribution_type));
-                                } catch (err) {
-                                    rejected(err);
-                                }
-                            }
-                        });
-                    } else {
-                        resolve(null);
-                    }
-                })
-                .catch((error) => {
+            const newApartament = {
+                number,
+                building_id,
+                type,
+                state,
+                contribution_type,
+            };
+            db.query(INSERT_APARTAMENT, newApartament, (error, results) => {
+                if (error) {
                     rejected(error);
-                });
+                } else {
+                    try {
+                        resolve(new Apartament(results.insertId, number, building_id, type, state, contribution_type));
+                    } catch (err) {
+                        rejected(err);
+                    }
+                }
+            });
         });
     }
 }
