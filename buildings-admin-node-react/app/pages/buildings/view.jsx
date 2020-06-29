@@ -1,8 +1,9 @@
 const React = require('react');
 const { Route } = require('react-router-dom');
 const Buildings = require('../../components/buildings');
-//const TaskDetail = require ('../../components/task-details');
-//const NewTask = require ('../../components/new-task')
+const CreateBuilding = require ('../../components/buildings/create')
+const UpdateBuilding = require ('../../components/buildings/update')
+
 
 class BuildingsPage extends React.Component {
     render() {
@@ -29,6 +30,15 @@ class BuildingsPage extends React.Component {
                     exact
                     path="/buildings"
                     render={(props) => <Buildings {...props} buildings={buildings}/>}
+                />
+                <Route
+                    exact
+                    path="/buildings/create"
+                    render={(props) => <CreateBuilding {...props}/>}
+                />
+                <Route
+                    path="/buildings/:id"
+                    render={(props) => <UpdateBuilding {...props} id={props.match.params.id}/>}
                 />
             </React.Fragment>
         );

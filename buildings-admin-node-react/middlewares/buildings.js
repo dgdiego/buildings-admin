@@ -1,12 +1,10 @@
-const Building = require('../models/building');
+const services = require('../services/building-services');
 
 const getAllBuildings = (req, res, next) => {
-    Building.getAllBuildings()
-        .then((buildings) => {
-            res.status(200);
-            res.json({
-                buildings,
-            });
+    services.getAllBuildings()
+        .then((result) => {
+            res.status(result.status);
+            res.json(result);
         })
         .catch((error) => {
             next(error);
@@ -15,20 +13,10 @@ const getAllBuildings = (req, res, next) => {
 }
 
 const getBuildingById = (req, res, next) => {
-    Building.getBuildingById(req.params.id)
-        .then((building) => {
-            if (building) {
-                res.status(200);
-                res.json({
-                    building,
-                });
-            } else {
-                res.status(404);
-                res.json({
-                    success: false,
-                    message: 'No existe un edificio con el ID especificado',
-                });
-            }
+    services.getBuildingById(req.params.id)
+        .then((result) => {
+            res.status(result.status);
+            res.json(result);
         })
         .catch((error) => {
             next(error);
@@ -37,20 +25,22 @@ const getBuildingById = (req, res, next) => {
 }
 
 const createBuilding = (req, res, next) => {
-    Building.create(req.body)
-        .then((building) => {
-            if (building) {
-                res.status(200);
-                res.json({
-                    building,
-                });
-            } else {
-                res.status(409); //conflict
-                res.json({
-                    success: false,
-                    message: 'Ya existe un edificio con el nombre especificado'
-                })
-            }
+    services.create(req.body)
+        .then((result) => {
+            res.status(result.status);
+            res.json(result);
+        })
+        .catch((error) => {
+            next(error);
+        });
+
+}
+
+const updateBuilding = (req, res, next) => {
+    services.update(req.body)
+        .then((result) => {
+            res.status(result.status);
+            res.json(result);
         })
         .catch((error) => {
             next(error);
@@ -61,5 +51,6 @@ const createBuilding = (req, res, next) => {
 module.exports = {
     getAllBuildings,
     getBuildingById,
-    createBuilding
+    createBuilding,
+    updateBuilding
 }

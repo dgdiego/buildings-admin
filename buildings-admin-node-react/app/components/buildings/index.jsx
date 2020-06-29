@@ -1,5 +1,5 @@
 const React = require('react');
-const {Link} = require ('react-router-dom');
+const { Link } = require('react-router-dom');
 
 class Buildings extends React.Component {
     constructor(props) {
@@ -13,13 +13,13 @@ class Buildings extends React.Component {
 
     componentDidMount() {
         fetch(`/api/buildings/`)
-            .then(res => res.json()).then((data) =>{
-            this.setState({
-                buildings: data.buildings,
-                loading: false,
-                error: false,
-            });
-        })
+            .then(res => res.json()).then((data) => {
+                this.setState({
+                    buildings: data.data,
+                    loading: false,
+                    error: false,
+                });
+            })
             .catch((err) => {
                 console.error(err);
                 this.setState({
@@ -31,23 +31,31 @@ class Buildings extends React.Component {
     }
 
     render() {
-        const buildings  = this.state.buildings;
+        const buildings = this.state.buildings;
         if (this.state.loading) {
             return <div>Cargando edificios ...</div>
         }
         return (
-            <div>
+            <div class="ui text container">
                 <h1>Listado de edificios</h1>
-                
-                <ul>
+
+                <div role="list" class="ui divided middle aligned list">
                     {
-                        buildings.map(building => 
-                        <li>ID: {building.id} - Nombre: {building.name}</li>
+                        buildings.map(building =>
+                            <div role="listitem" class="item" key={building.id}>
+                                <div class="right floated content">
+                                    <button class="ui button">
+                                        <Link to={`/buildings/${building.id}`}>Editar</Link>
+                                    </button>
+                                </div>
+                                <img src="https://picsum.photos/200" class="ui avatar image" />
+                                <div class="content">ID: {building.id} - Nombre: {building.name}</div>
+                            </div>
                         )
                     }
-                </ul>
+                </div>
             </div>
-        );
+        )
     }
 };
 

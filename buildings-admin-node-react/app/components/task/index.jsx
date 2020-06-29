@@ -8,7 +8,6 @@ class Task extends React.Component {
         <h2>{this.props.id}: {this.props.name}</h2>
         <p>{this.props.description}</p>
         <Link to={`/to-do-list/task/${this.props.id}`}>Ir a la tarea</Link>
-        <p>hola</p>
       </li>
     );
   }

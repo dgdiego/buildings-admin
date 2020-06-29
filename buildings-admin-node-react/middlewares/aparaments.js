@@ -1,4 +1,3 @@
-const Apartament = require('../models/apartament');
 const services = require('../services/apartament-services');
 
 const getAllApartamentsByBuilding = (req, res, next) => {

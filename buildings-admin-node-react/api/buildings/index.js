@@ -3,7 +3,8 @@ var router = require('express').Router();
 const { 
     getAllBuildings,
     getBuildingById,
-    createBuilding
+    createBuilding,
+    updateBuilding
 } = require('../../middlewares/buildings');
 
 /*const { 
@@ -20,5 +21,6 @@ const {
 router.get('/', getAllBuildings);
 router.get('/:id', getBuildingById);
 router.post('/create', createBuilding);
+router.post('/:id', updateBuilding);
 
 module.exports = router;

@@ -1,8 +1,9 @@
 const db = require('../services/db-connection');
-const GET_BUILDING_BY_ID = 'SELECT * from buildings WHERE id = ?';
-const GET_BUILDING_BY_NAME = 'SELECT * from buildings WHERE name = ?';
-const GET_ALL_BULDINGS = 'SELECT * from buildings';
+const GET_BUILDING_BY_ID = 'SELECT * FROM buildings WHERE id = ?';
+const GET_BUILDING_BY_NAME = 'SELECT * FROM buildings WHERE name = ?';
+const GET_ALL_BULDINGS = 'SELECT * FROM buildings';
 const INSERT_BUILDING = 'INSERT INTO buildings SET ?';
+const UPDATE_BUILDING = 'UPDATE buildings SET name = ?, address = ? WHERE id = ?';
 
 class Building {
     constructor(id, name, address) {
@@ -75,32 +76,38 @@ class Building {
     static create(parms) {
         return new Promise((resolve, rejected) => {
             const { name, address } = parms;
-
-            this.getBuildingByName(name)
-                .then((found) => {
-                    if (!found) {
-                        const newBuilding = {
-                            name,
-                            address
-                        };
-                        db.query(INSERT_BUILDING, newBuilding, (error, results) => {
-                            if (error) {
-                                rejected(error);
-                            } else {
-                                try {
-                                    resolve(new Building(results.insertId, name, address));
-                                } catch (err) {
-                                    rejected(err);
-                                }
-                            }
-                        });
-                    } else {
-                        resolve(null);
-                    }
-                })
-                .catch((error) => {
+            const newBuilding = {
+                name,
+                address
+            };
+            db.query(INSERT_BUILDING, newBuilding, (error, results) => {
+                if (error) {
                     rejected(error);
-                });
+                } else {
+                    try {
+                        resolve(new Building(results.insertId, name, address));
+                    } catch (err) {
+                        rejected(err);
+                    }
+                }
+            })     
+        });
+    }
+    
+    static update(parms) {
+        return new Promise((resolve, rejected) => {
+            const { id, name, address } = parms;
+            db.query(UPDATE_BUILDING, [name, address, id], (error, results) => {
+                if (error) {
+                    rejected(error);
+                } else {
+                    try {
+                        resolve(new Building(id, name, address));
+                    } catch (err) {
+                        rejected(err);
+                    }
+                }
+            })
         });
     }
 }
