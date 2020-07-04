@@ -1,30 +1,17 @@
 const React = require('react');
 const { Route } = require('react-router-dom');
 const Buildings = require('../../components/buildings');
-const CreateBuilding = require ('../../components/buildings/create')
-const UpdateBuilding = require ('../../components/buildings/update')
+const CreateBuilding = require ('../../components/buildings/create');
+const UpdateBuilding = require ('../../components/buildings/update');
+const ViewBuilding = require ('../../components/buildings/view');
+
+const CreateApartament = require('../../components/apartaments/create');
 
 
 class BuildingsPage extends React.Component {
     render() {
         const { buildings } = this.props.initialState;
         return (
-            /*<React.Fragment>
-                <Route
-                    path="/to-do-list/task/:id"
-                    render={(props) => <TaskDetail {...props} id={props.match.params.id}/>}
-                />
-                <Route
-                    exact
-                    path="/to-do-list"
-                    render={(props) => <ToDoList {...props} tasks={tasks}/>}
-                />
-                <Route
-                    exact
-                    path="/to-do-list/new"
-                    render={(props) => <NewTask {...props} tasks={tasks}/>}
-                />
-            </React.Fragment>*/
             <React.Fragment>
                 <Route
                     exact
@@ -37,8 +24,21 @@ class BuildingsPage extends React.Component {
                     render={(props) => <CreateBuilding {...props}/>}
                 />
                 <Route
-                    path="/buildings/:id"
+                    exact
+                    path="/buildings/:id" 
                     render={(props) => <UpdateBuilding {...props} id={props.match.params.id}/>}
+                />
+
+                {/*Apartaments*/}
+                <Route
+                    exact
+                    path="/buildings/:id/apartaments" 
+                    render={(props) => <ViewBuilding {...props} id={props.match.params.id}/>}
+                />
+                <Route
+                    exact
+                    path="/buildings/:id/apartaments/create" 
+                    render={(props) => <CreateApartament {...props} id={props.match.params.id}/>}
                 />
             </React.Fragment>
         );

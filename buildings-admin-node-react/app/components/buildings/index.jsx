@@ -1,5 +1,7 @@
 const React = require('react');
 const { Link } = require('react-router-dom');
+const Layout = require('../layout');
+const { get } = require('../../services/restClient');
 
 class Buildings extends React.Component {
     constructor(props) {
@@ -12,8 +14,8 @@ class Buildings extends React.Component {
     }
 
     componentDidMount() {
-        fetch(`/api/buildings/`)
-            .then(res => res.json()).then((data) => {
+        get(`/api/buildings/`)
+            .then((data) => {
                 this.setState({
                     buildings: data.data,
                     loading: false,
@@ -21,7 +23,6 @@ class Buildings extends React.Component {
                 });
             })
             .catch((err) => {
-                console.error(err);
                 this.setState({
                     buildings: null,
                     loading: false,
@@ -33,28 +34,46 @@ class Buildings extends React.Component {
     render() {
         const buildings = this.state.buildings;
         if (this.state.loading) {
-            return <div>Cargando edificios ...</div>
+            return (
+                <div className="container">
+                    <div class="d-flex align-items-center">
+                        <strong>Cargando edificio...</strong>
+                        <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+                    </div>
+                </div>
+            )
         }
         return (
-            <div class="ui text container">
-                <h1>Listado de edificios</h1>
-
-                <div role="list" class="ui divided middle aligned list">
-                    {
-                        buildings.map(building =>
-                            <div role="listitem" class="item" key={building.id}>
-                                <div class="right floated content">
-                                    <button class="ui button">
-                                        <Link to={`/buildings/${building.id}`}>Editar</Link>
-                                    </button>
-                                </div>
-                                <img src="https://picsum.photos/200" class="ui avatar image" />
-                                <div class="content">ID: {building.id} - Nombre: {building.name}</div>
-                            </div>
-                        )
-                    }
+            <Layout>
+                <div className="container">
+                    <div className="py-5">
+                        <h1 className="d-inline">Listado de edificios</h1>
+                        <Link to={`/buildings/create`}><button type="button" class="btn btn-outline-success float-right"><i className="fas fa-plus"></i> Agregar</button></Link>
+                    </div>
+                    <table className="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Edificio</th>
+                                <th scope="col">Dirección</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                buildings.map(building =>
+                                    <tr key={building.id}>
+                                        <th scope="row">{building.id}</th>
+                                        <td><Link to={`/buildings/${building.id}/apartaments`}>{building.name}</Link></td>
+                                        <td>{building.address}</td>
+                                        <td><span className="float-right"><Link to={`/buildings/${building.id}`} title="Editar" className="text-info"><i className="fas fa-edit"></i></Link></span></td>
+                                    </tr>
+                                )
+                            }
+                        </tbody>
+                    </table>
                 </div>
-            </div>
+            </Layout>
         )
     }
 };

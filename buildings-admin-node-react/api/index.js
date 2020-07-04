@@ -9,7 +9,7 @@ const { apiErrorHandler } = require('../middlewares/error-handler');
 
 const { prueba } = require('../middlewares/prueba');
 
-router.use(prueba);
+//router.use(prueba);
 router.use('/buildings', buildingRouter);
 router.use('/contributionTypes', contributionTypesRouter);
 router.use('/apartaments/', apartamentsRouter);

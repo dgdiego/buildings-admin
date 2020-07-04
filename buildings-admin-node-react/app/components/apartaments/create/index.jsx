@@ -1,51 +1,28 @@
 const React = require('react');
 const { Link } = require('react-router-dom');
 const { Redirect } = require('react-router-dom');
-const { get, post } = require('../../../services/restClient');
+const { post } = require('../../../services/restClient');
 
-class UpdateBuilding extends React.Component {
+class CreateApartament extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            building: null,
-            loading: true,
-            name: '',
+            number: '',
             address: '',
             redirect: null,
             error: false,
             message: ''
         };
 
-        this.handleNameChange = this.handleNameChange.bind(this);
+        this.handleNameChange = this.handleNumberChange.bind(this);
         this.handleAddressChange = this.handleAddressChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    componentDidMount() {
-        get(`/api/buildings/${this.props.id}`)
-            .then((data) => {
-                this.setState({
-                    building: data.data,
-                    name: data.data.name,
-                    address: data.data.address,
-                    loading: false,
-                    error: false,
-                    message: '',
-                });
-            }).catch((err) => {
-                this.setState({
-                    building: null,
-                    loading: false,
-                    error: true,
-                    message: err.message
-                });
-            });
-    }
-
-    handleNameChange(event) {
+    handleNumberChange(event) {
         this.setState({
-            name: event.target.value
+            number: event.target.value
         });
     }
 
@@ -55,15 +32,32 @@ class UpdateBuilding extends React.Component {
         });
     }
 
+    componentDidMount() {
+        get(`/api/apartaments/${this.props.idBuilding}`)
+            .then((data) => {
+                this.setState({
+                    apartaments: data.data,
+                    loading: false,
+                    error: false,
+                });
+            })
+            .catch((err) => {
+                this.setState({
+                    apartaments: null,
+                    loading: false,
+                    error: true,
+                });
+            });
+    }
+
     handleSubmit(event) {
         event.preventDefault();
 
         post({
-            url: `/api/buildings/${this.state.building.id}`,
+            url: '/api/buildings/create',
             method: 'POST',
             headers: { "Content-Type": "application/json; charset=utf-8" },
             body: JSON.stringify({
-                id: this.state.building.id,
                 name: this.state.name,
                 address: this.state.address
             })
@@ -71,7 +65,6 @@ class UpdateBuilding extends React.Component {
             this.setState({
                 redirect: true
             });
-
         }).catch((err) => {
             this.setState({
                 error: true,
@@ -81,48 +74,38 @@ class UpdateBuilding extends React.Component {
     }
 
     render() {
-        if (this.state.loading) {
-            return (
-                <div className="container">
-                    <div class="d-flex align-items-center">
-                        <strong>Cargando edificio...</strong>
-                        <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
-                    </div>
-                </div>
-            )
-        }
         if (this.state.redirect) {
-            return <Redirect to="/buildings" />
+            return <Redirect to={`/buildings/${idBuilding}/apartaments`}/>
         }
         return (
             <div>
                 <div className="container">
                     <div className="py-5">
-                        <h2 className="d-inline">Editar edificio</h2>
-                        <Link to={`/buildings`}><button type="button" class="btn btn-outline-primary float-right"><i className="fas fa-undo"></i> Volver</button></Link>
+                        <h2 className="d-inline">Agregar apartamento</h2>
+                        <Link to={`/buildings/${idBuilding}/apartaments`}><button type="button" class="btn btn-outline-primary float-right"><i className="fas fa-undo"></i> Volver</button></Link>
                     </div>
                     <form onSubmit={this.handleSubmit}>
                         <div class="form-group">
-                            <label for="name">Nombre</label>
-                            <input type="text" class="form-control col-3" id="name" name="name" value={this.state.name} required onChange={this.handleNameChange} />
+                            <label for="number">Número</label>
+                            <input type="text" class="form-control col-3" id="number" name="number" value={this.state.number} required onChange={this.handleNumberChange} />
                         </div>
                         <div class="form-group">
                             <label for="address">Dirección</label>
                             <input type="text" class="form-control col-6" id="address" name="address" value={this.state.address} required onChange={this.handleAddressChange} />
                         </div>
-                        <button type="submit" class="btn btn-success">Editar</button>
+                        <button type="submit" class="btn btn-success">Agregar</button>
                     </form>
                     {this.state.error &&
-                        <div className="form-group">
-                            <div class="alert alert-danger" role="alert">
-                                {this.state.message}
+                            <div className="form-group">
+                                <div class="alert alert-danger" role="alert">
+                                    {this.state.message}
+                                </div>
                             </div>
-                        </div>
-                    }
+                        }
                 </div>
             </div>
         );
     }
 };
 
-module.exports = UpdateBuilding;
+module.exports = CreateApartament;

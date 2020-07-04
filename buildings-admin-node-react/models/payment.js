@@ -1,7 +1,7 @@
 const db = require('../services/db-connection');
 
 const GET_PAYMENT_BY_ID = 'SELECT * FROM payments WHERE id = ?';
-const GET_PAYMENTS_BY_APARTAMENT = 'SELECT * FROM payments WHERE apartament_id = ?';
+const GET_PAYMENTS_BY_APARTAMENT = 'SELECT * FROM payments WHERE apartament_id = ? ORDER BY date desc';
 const INSERT_PAYMENT = 'INSERT INTO payments SET ?';
 
 class Payment {

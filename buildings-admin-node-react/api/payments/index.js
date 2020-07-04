@@ -6,8 +6,8 @@ const {
     createPayment
 } = require('../../middlewares/payments');
 
-//router.get('/', getPaymentsByApartament);
-///router.get('/:id', getPaymentById);
+router.get('/apartament/:id', getPaymentsByApartament);
+router.get('/:id', getPaymentById);
 router.post('/create', createPayment);
 
 

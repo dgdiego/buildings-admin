@@ -3,32 +3,32 @@ const { Link } = require('react-router-dom');
 const { Redirect } = require('react-router-dom');
 const { post } = require('../../../services/restClient');
 
-class CreateBuilding extends React.Component {
+class CreatePayment extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            name: '',
-            address: '',
+            date: '',
+            amount: '',
             redirect: null,
             error: false,
             message: ''
         };
 
-        this.handleNameChange = this.handleNameChange.bind(this);
-        this.handleAddressChange = this.handleAddressChange.bind(this);
+        this.handleDateChange = this.handleDateChange.bind(this);
+        this.handleAmountChange = this.handleAmountChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleNameChange(event) {
+    handleDateChange(event) {
         this.setState({
-            name: event.target.value
+            date: event.target.value
         });
     }
 
-    handleAddressChange(event) {
+    handleAmountChange(event) {
         this.setState({
-            address: event.target.value
+            amount: event.target.value
         });
     }
 
@@ -36,12 +36,13 @@ class CreateBuilding extends React.Component {
         event.preventDefault();
 
         post({
-            url: '/api/buildings/create',
+            url: `/api/payments/create`,
             method: 'POST',
             headers: { "Content-Type": "application/json; charset=utf-8" },
             body: JSON.stringify({
-                name: this.state.name,
-                address: this.state.address
+                apartament_id: this.props.idApto,
+                date: this.state.date,
+                amount: this.state.amount
             })
         }).then((data) => {
             this.setState({
@@ -57,23 +58,23 @@ class CreateBuilding extends React.Component {
 
     render() {
         if (this.state.redirect) {
-            return <Redirect to="/buildings" />
+            return <Redirect to={`/payments/apartament/${this.props.idApto}`} />
         }
         return (
             <div>
                 <div className="container">
                     <div className="py-5">
-                        <h2 className="d-inline">Agregar edificio</h2>
-                        <Link to={`/buildings`}><button type="button" class="btn btn-outline-primary float-right"><i className="fas fa-undo"></i> Volver</button></Link>
+                        <h2 className="d-inline">Agregar pago</h2>
+                        <Link to={`/payments/apartament/${this.props.idApto}`} ><button type="button" class="btn btn-outline-primary float-right"><i className="fas fa-undo"></i> Volver</button></Link>
                     </div>
                     <form onSubmit={this.handleSubmit}>
                         <div class="form-group">
-                            <label for="name">Nombre</label>
-                            <input type="text" class="form-control col-3" id="name" name="name" value={this.state.name} required onChange={this.handleNameChange} />
+                            <label for="date">Fecha</label>
+                            <input type="date" class="form-control col-3" id="date" name="date" value={this.state.date} required onChange={this.handleDateChange} />
                         </div>
                         <div class="form-group">
-                            <label for="address">Dirección</label>
-                            <input type="text" class="form-control col-6" id="address" name="address" value={this.state.address} required onChange={this.handleAddressChange} />
+                            <label for="amount">Monto</label>
+                            <input type="number" class="form-control col-3" id="amount" name="amount" value={this.state.amount} required onChange={this.handleAmountChange} />
                         </div>
                         <button type="submit" class="btn btn-success">Agregar</button>
                     </form>
@@ -90,4 +91,4 @@ class CreateBuilding extends React.Component {
     }
 };
 
-module.exports = CreateBuilding;
+module.exports = CreatePayment;

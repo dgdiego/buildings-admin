@@ -1,34 +1,21 @@
-const Payment = require('../models/payment');
+const services = require('../services/payment-services');
 
-const getPaymentsByApartament = (req, res, next) => {
-    Payment.getPaymentsByApartament(req.idApartament)
-        .then((Payments) => {
-            res.status(200);
-            res.json({
-                Payments,
-            });
+const getPaymentById = (req, res, next) => {
+    services.getPaymentById(req.params.id)
+        .then((result) => {
+            res.status(result.status);
+            res.json(result);
         })
         .catch((error) => {
             next(error);
         });
-
 }
 
-const getPaymentById = (req, res, next) => {
-    Payment.getPaymentById(req.params.id)
-        .then((Payment) => {
-            if (Payment) {
-                res.status(200);
-                res.json({
-                    Payment,
-                });
-            } else {
-                res.status(404);
-                res.json({
-                    success: false,
-                    message: 'No existe un tipo de contribución con el ID especificado',
-                });
-            }
+const getPaymentsByApartament = (req, res, next) => {
+    services.getPaymentsByApartament(req.params.id)
+        .then((result) => {
+            res.status(result.status);
+            res.json(result);
         })
         .catch((error) => {
             next(error);
@@ -37,20 +24,10 @@ const getPaymentById = (req, res, next) => {
 }
 
 const createPayment = (req, res, next) => {
-    Payment.create(req.body)
-        .then((Payment) => {
-            if (Payment) {
-                res.status(200);
-                res.json({
-                    Payment,
-                });
-            } else {
-                res.status(409); //conflict
-                res.json({
-                    success: false,
-                    message: 'Ya existe el tipo de contribución para el edificio'
-                })
-            }
+    services.create(req.body)
+        .then((result) => {
+            res.status(result.status);
+            res.json(result);
         })
         .catch((error) => {
             next(error);
