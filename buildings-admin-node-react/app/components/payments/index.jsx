@@ -1,21 +1,51 @@
 const React = require('react');
 const { Link } = require('react-router-dom');
 const { Redirect } = require('react-router-dom');
-const { get } = require('../../services/restClient');
+const { get, post } = require('../../services/restClient');
 
 class Payments extends React.Component {
 
     constructor(props) {
         super(props);
+        console.log(this.props);
         this.state = {
             loading: true,
             payments: null,
             error: false,
-            message: ''
+            message: '',
+            paymentToDelete: null,
+            building: null,
+            apartament: null
         };
     }
 
-    componentDidMount() {
+    initData() {
+        get(`/api/buildings/${this.props.idBuilding}`)
+            .then((data) => {
+                this.setState({
+                    building: data.data,
+                });
+            }).catch((err) => {
+                this.setState({
+                    error: true,
+                    message: err.message
+                });
+            });
+
+        get(`/api/apartaments/${this.props.idBuilding}/${this.props.idApto}`)
+            .then((data) => {
+                this.setState({
+                    apartament: data.data,
+                });
+            }).catch((err) => {
+                this.setState({
+                    error: true,
+                    message: err.message
+                });
+            });
+    }
+
+    loadData() {
         get(`/api/payments/apartament/${this.props.idApto}`)
             .then((data) => {
                 this.setState({
@@ -34,16 +64,74 @@ class Payments extends React.Component {
             });
     }
 
+
+    componentDidMount() {
+        this.initData();
+        this.loadData();
+    }
+
+    handlePaymentToDelete(payment, event) {
+        this.setState({
+            paymentToDelete: payment
+        })
+    }
+
+    handleDelete(event) {
+        post({
+            url: `/api/payments/${this.state.paymentToDelete.id}`,
+            method: 'DELETE',
+            headers: { "Content-Type": "application/json; charset=utf-8" },
+            body: JSON.stringify({
+                id: this.state.paymentToDelete.id,
+            })
+        }).then((data) => {
+            this.setState({
+                paymentToDelete: null
+            });
+            this.loadData();
+            this.closeModal();
+
+
+        }).catch((err) => {
+            this.setState({
+                error: true,
+                message: err.message
+            });
+            this.closeModal();
+            alert(this.state.message);
+        });
+    }
+
+    closeModal() {
+        $('#staticBackdrop').modal('hide');
+    }
+
     render() {
         const payments = this.state.payments;
         const idApto = this.props.idApto;
 
-        if (this.state.loading) {
+        const building = this.state.building;
+        const apartament = this.state.apartament;
+        /*console.log(this.props.location.building);
+        const apartament = this.props.location.apartament
+        const building = this.props.location.building*/
+
+        if (!this.state.payments || !this.state.building || !this.state.apartament) {
             return (
                 <div className="container">
                     <div class="d-flex align-items-center">
                         <strong>Cargando pagos...</strong>
                         <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+                    </div>
+                </div>
+            )
+        }
+
+        if (this.state.building.id != this.state.apartament.building_id) {
+            return (
+                <div className="container">
+                    <div class="alert alert-danger" role="alert">
+                        Oops! Algo hice mal. <a href="/buildings" class="alert-link">Retornarme al Inicio</a>.
                     </div>
                 </div>
             )
@@ -56,20 +144,22 @@ class Payments extends React.Component {
                         <div className="col">
                             <div className="py-5">
                                 <h2 className="d-inline">Pagos</h2>
-                                <Link to={`/buildings`}><button type="button" class="btn btn-outline-primary float-right"><i className="fas fa-undo"></i> Volver</button></Link>
+                                <a href={`/buildings/${this.props.idBuilding}/apartaments`}><button type="button" class="btn btn-outline-primary float-right"><i className="fas fa-undo"></i> Volver</button></a>
+                                {/*<Link to={`/buildings`}><button type="button" class="btn btn-outline-primary float-right"><i className="fas fa-undo"></i> Volver</button></Link>*/}
                             </div>
                         </div>
                     </div>
 
-                    {/*<div class="card">
+                    <div class="card">
                         <div class="card-header">
-                        <i className="fas fa-building"></i> {building.name}
+                            <i className="fas fa-building"></i> {building.name}
                         </div>
                         <div class="card-body">
                             <p class="card-text"><i className="fas fa-map-marker-alt"></i> {building.address}</p>
+                            <p class="card-text"><i className="fas fa-home"></i> {apartament.number} <i className="fas fa-chevron-circle-right"></i> {apartament.type}</p>
                         </div>
                     </div>
-                    
+
                     {this.state.error &&
                         <div className="form-group">
                             <div class="alert alert-danger" role="alert">
@@ -77,7 +167,7 @@ class Payments extends React.Component {
                             </div>
                         </div>
                     }
-                    */}
+
 
                     <div className="py-5">
                         <h2 className="d-inline">Listado de pagos</h2>
@@ -99,7 +189,10 @@ class Payments extends React.Component {
                                         <td>{payment.amount}</td>
                                         <td>
                                             <span className="float-right">
-                                                pp
+                                                <Link to={`/payments/${payment.id}`} title="Editar" className="text-primary"><i className="fas fa-edit"></i></Link>
+                                                <a href="#" title="Borrar" className="text-danger ml-2"><i className="fas fa-trash-alt"
+                                                    onClick={this.handlePaymentToDelete.bind(this, payment)}
+                                                    data-toggle="modal" data-target="#staticBackdrop"></i></a>
                                             </span>
                                         </td>
                                     </tr>
@@ -107,6 +200,26 @@ class Payments extends React.Component {
                             }
                         </tbody>
                     </table>
+
+                    <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="staticBackdropLabel">Atención</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    Seguro desea eliminar el pago de Fecha <span className="font-weight-bold">{this.state.paymentToDelete ? this.state.paymentToDelete.date : ''}</span> y Monto <span className="font-weight-bold">{this.state.paymentToDelete ? this.state.paymentToDelete.amount : ''}</span>?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                    <button type="button" class="btn btn-danger" onClick={this.handleDelete.bind(this)}>Sí, eliminar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         );

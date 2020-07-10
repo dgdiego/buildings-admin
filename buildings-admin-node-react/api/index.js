@@ -5,11 +5,17 @@ const apartamentsRouter = require('./apartaments');
 const paymentsRouter = require('./payments');
 const expensesRouter = require('./expenses');
 const fundsRouter = require('./funds');
+const loginRouter = require('./login');
+const logoutRouter = require('./logout');
 const { apiErrorHandler } = require('../middlewares/error-handler');
+const { apiAutentication } = require('../middlewares/permission');
 
-const { prueba } = require('../middlewares/prueba');
+//always execute 
+router.use(apiAutentication);
 
-//router.use(prueba);
+//api routes
+router.use('/login', loginRouter);
+router.use('/logout', logoutRouter);
 router.use('/buildings', buildingRouter);
 router.use('/contributionTypes', contributionTypesRouter);
 router.use('/apartaments/', apartamentsRouter);

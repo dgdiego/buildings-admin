@@ -1,5 +1,6 @@
 const services = require('../services/payment-services');
 
+
 const getPaymentById = (req, res, next) => {
     services.getPaymentById(req.params.id)
         .then((result) => {
@@ -35,8 +36,34 @@ const createPayment = (req, res, next) => {
 
 }
 
+const updatePayment = (req, res, next) => {
+    services.update(req.body)
+        .then((result) => {
+            res.status(result.status);
+            res.json(result);
+        })
+        .catch((error) => {
+            next(error);
+        });
+
+}
+
+const deletePayment = (req, res, next) => {
+    services.deleted(req.body)
+        .then((result) => {
+            res.status(result.status);
+            res.json(result);
+        })
+        .catch((error) => {
+            next(error);
+        });
+
+}
+
 module.exports = {
     getPaymentsByApartament,
     getPaymentById,
-    createPayment
+    createPayment,
+    updatePayment,
+    deletePayment
 }

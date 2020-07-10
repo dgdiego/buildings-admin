@@ -78,7 +78,7 @@ class ViewBuilding extends React.Component {
                         </div>
                     }
                 </div>
-                <Apartaments idBuilding={building.id}></Apartaments>
+                <Apartaments Building={building}></Apartaments>
             </div>
         );
     }

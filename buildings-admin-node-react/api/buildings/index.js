@@ -4,7 +4,8 @@ const {
     getAllBuildings,
     getBuildingById,
     createBuilding,
-    updateBuilding
+    updateBuilding,
+    deleteBuilding
 } = require('../../middlewares/buildings');
 
 /*const { 
@@ -22,5 +23,6 @@ router.get('/', getAllBuildings);
 router.get('/:id', getBuildingById);
 router.post('/create', createBuilding);
 router.post('/:id', updateBuilding);
+router.delete('/:id', deleteBuilding);
 
 module.exports = router;

@@ -7,8 +7,14 @@ const View = require('./view');
 // https://www.digitalocean.com/community/tutorials/react-react-router-ssr
 
 router.get('/*', (req, res, next) => {
-    const initialState = {};
+    var initialState = {};
     const context = {};
+
+    if(req.query.building){
+        initialState = {
+            building: req.query.building
+        }
+    }
 
     const content = renderToString(
         <StaticRouter location={req.url} context={context}>

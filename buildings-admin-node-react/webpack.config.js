@@ -4,7 +4,9 @@ module.exports = {
     entry: {
         'to-do-list': './app/client/to-do-list.js',
         'buildings': './app/client/buildings.js',
-        'payments': './app/client/payments.js'
+        'payments': './app/client/payments.js',
+        'login': './app/client/login.js',
+        'home': './app/client/home.js'
     },
     devtool: 'eval-source-map',
     module: {

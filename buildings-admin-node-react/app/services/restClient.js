@@ -4,17 +4,18 @@ const get = (url) => {
             if (res.status === 200) {
                 resolve(res.json());
             }
-            if (res.status == 401) {
-                window.location = './login';
+            if (res.status === 401) {
+                window.location = '/login';
             }
-            if (res.status != 500) {
-                res.json().then((data) => {
+            if (res.status === 500 || res.status === 409 || res.status === 404 || res.status === 400) {
+                /*res.json().then((data) => {
                     reject(data);
-                });
+                });*/
+                reject(res.json());
 
-            } else {
+            } /*else {
                 window.location = './500';
-            }
+            }*/
         });
     });
 };
@@ -31,17 +32,18 @@ const post = (params) => {
                     resolve(data);
                 });
             }
-            if (res.status == 401) {
-                window.location = './login';
+            if (res.status === 401) {
+                window.location = '/login';
             }
-            if (res.status != 500) {
+            if (res.status === 500 || res.status === 409 || res.status === 404 || res.status === 400) {
                 res.json().then((data) => {
                     reject(data);
                 });
+                //reject(res.json());
 
-            } else {
+            } /*else {
                 window.location = './500';
-            }
+            }*/
         });
     });
 };

@@ -3,6 +3,8 @@ const db = require('../services/db-connection');
 const GET_PAYMENT_BY_ID = 'SELECT * FROM payments WHERE id = ?';
 const GET_PAYMENTS_BY_APARTAMENT = 'SELECT * FROM payments WHERE apartament_id = ? ORDER BY date desc';
 const INSERT_PAYMENT = 'INSERT INTO payments SET ?';
+const UPDATE_PAYMENT = 'UPDATE payments SET date = ?, amount = ? WHERE id = ?';
+const DELETE_PAYMENT = 'DELETE FROM payments WHERE id = ?';
 
 class Payment {
 
@@ -74,6 +76,39 @@ class Payment {
                 }
             });
 
+        });
+    }
+
+    static update(parms) {
+        return new Promise((resolve, rejected) => {
+            const { id, apartament_id, date, amount } = parms;
+            db.query(UPDATE_PAYMENT, [date, amount, id], (error, results) => {
+                if (error) {
+                    rejected(error);
+                } else {
+                    try {
+                        resolve(new Payment(id, apartament_id, date, amount));
+                    } catch (err) {
+                        rejected(err);
+                    }
+                }
+            })
+        });
+    }
+
+    static delete(id) {
+        return new Promise((resolve, rejected) => {
+            db.query(DELETE_PAYMENT, [id], (error, results) => {
+                if (error) {
+                    rejected(error);
+                } else {
+                    try {
+                        resolve('true');
+                    } catch (err) {
+                        rejected(err);
+                    }
+                }
+            })
         });
     }
 }

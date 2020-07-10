@@ -14,7 +14,7 @@ class Apartaments extends React.Component {
     }
 
     componentDidMount() {
-        get(`/api/apartaments/${this.props.idBuilding}`)
+        get(`/api/apartaments/${this.props.Building.id}`)
             .then((data) => {
                 this.setState({
                     apartaments: data.data,
@@ -33,7 +33,8 @@ class Apartaments extends React.Component {
 
     render() {
         const apartaments = this.state.apartaments;
-        const idBuilding = this.props.idBuilding
+        const building = this.props.Building;
+        const idBuilding = this.props.Building.id;
 
         if (this.state.loading) {
             return (
@@ -70,8 +71,9 @@ class Apartaments extends React.Component {
                                         <td>{apartament.state}</td>
                                         <td>
                                             <span className="float-right">
-                                                <Link to={`/payments/apartament/${apartament.id}`} title="Ver pagos" className="text-success"><i className="fas fa-cash-register"></i></Link> 
-                                                <Link to={`/buildings/${idBuilding}/apartaments/${apartament.id}`} title="Editar" className="text-info"><i className="fas fa-edit"></i></Link>
+                                                <a href={`/payments/apartament/${apartament.id}?building=${building.id}`} title="Ver pagos" className="text-success"><i className="fas fa-cash-register"></i></a>
+                                                {/*<Link to={{pathname: `/payments/apartament/${apartament.id}`, building: {building}}} title="Ver pagos" className="text-success"><i className="fas fa-cash-register"></i></Link>*/} 
+                                                <Link to={`/buildings/${idBuilding}/apartaments/${apartament.id}`} title="Editar" className="text-info ml-2"><i className="fas fa-edit"></i></Link>
                                             </span>
                                        </td>
                                     </tr>

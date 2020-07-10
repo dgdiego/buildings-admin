@@ -48,6 +48,7 @@ class CreateBuilding extends React.Component {
                 redirect: true
             });
         }).catch((err) => {
+            console.log(err);
             this.setState({
                 error: true,
                 message: err.message

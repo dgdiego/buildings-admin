@@ -1,55 +1,69 @@
-const Building = require('../models/building');
-const Apartament = require('../models/apartament');
+const User = require('../models/user');
 const { threadId } = require('./db-connection');
 
-const getBuildingById = async (id) => {
-    try {
-        const building = await Building.getBuildingById(id);
-        if (building) {
-            return {
-                status: 200,
-                success: true,
-                message: 'OK',
-                data: building
-            };
-        } else {
-            return {
-                status: 404,
-                success: false,
-                message: `No existe edificio con el ID ${id}`
-            };
-        }
-    }
-    catch (error) {
-        throw error;
-    }
-}
+//const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 
-const getBuildingByName = async (name) => {
+const login = async (parms, req) => {
     try {
-        const building = await Building.getBuildingByName(name)
-        if (building) {
-            return {
-                status: 200,
-                success: true,
-                message: 'OK',
-                data: building
-            };
-        } else {
+        const { username, password } = parms;
+
+        const user = await User.getUserByUserName(username)
+        if (!user) {
             return {
                 status: 404,
                 success: false,
-                message: `No existe un edificio con nombre ${name}`
+                message: `No existe un usuario con username ${username}`,
+                data: null
             };
+        } else {
+            const match = crypto.createHash('md5').update(password).digest("hex") === user.password;
+            if (match) {
+                req.session.user = user;
+                return {
+                    status: 200,
+                    success: true,
+                    message: 'OK',
+                    data: user
+                };
+            } else {
+                return {
+                    status: 400,
+                    success: false,
+                    message: 'Contraseña incorrecta',
+                    data: null
+                };
+            }
         }
     }
     catch (error) {
         throw (error);
     }
 
+
 }
 
-const getAllBuildings = async () => {
+const logout = (req) => {
+    return new Promise(function (resolve, reject) {
+        if (req.session.user) {
+            req.session.user = null;
+            resolve({
+                status: 200,
+                success: true,
+                message: 'OK',
+            })
+        } else (
+            reject({
+                status: 404,
+                success: false,
+                message: 'No existe usuario loggueado'
+
+            })
+        )
+    });
+}
+
+/*const getAllBuildings = async () => {
     try {
         const buildings = await Building.getAllBuildings()
         if (buildings) {
@@ -71,9 +85,9 @@ const getAllBuildings = async () => {
         throw (error);
     }
 
-}
+}*/
 
-const create = async (parms) => {
+/*const create = async (parms) => {
     try {
         const { name } = parms;
 
@@ -96,9 +110,9 @@ const create = async (parms) => {
     } catch (error) {
         throw (error);
     }
-}
+}*/
 
-const update = async (parms) => {
+/*const update = async (parms) => {
     try {
         const { id, name } = parms;
 
@@ -132,9 +146,9 @@ const update = async (parms) => {
     } catch (error) {
         throw (error);
     }
-}
+}*/
 
-const deleted = async (parms) => {
+/*const deleted = async (parms) => {
     try {
         const { id } = parms;
 
@@ -168,13 +182,9 @@ const deleted = async (parms) => {
     catch (error) {
         throw (error);
     }
-}
+}*/
 
 module.exports = {
-    create,
-    update,
-    deleted,
-    getBuildingById,
-    getBuildingByName,
-    getAllBuildings
+    login,
+    logout
 }

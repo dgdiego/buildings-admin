@@ -1,28 +1,26 @@
 const db = require('../services/db-connection');
-const GET_BUILDING_BY_ID = 'SELECT * FROM buildings WHERE id = ?';
-const GET_BUILDING_BY_NAME = 'SELECT * FROM buildings WHERE name = ?';
-const GET_ALL_BULDINGS = 'SELECT * FROM buildings';
-const INSERT_BUILDING = 'INSERT INTO buildings SET ?';
-const UPDATE_BUILDING = 'UPDATE buildings SET name = ?, address = ? WHERE id = ?';
-const DELETE_BUILDING = 'DELETE FROM buildings WHERE id = ?';
+const GET_USER_BY_USERNAME = 'SELECT * FROM users WHERE username = ?';
+// const GET_ALL_BULDINGS = 'SELECT * FROM buildings';
+// const INSERT_BUILDING = 'INSERT INTO buildings SET ?';
+// const UPDATE_BUILDING = 'UPDATE buildings SET name = ?, address = ? WHERE id = ?';
+// const DELETE_BUILDING = 'DELETE FROM buildings WHERE id = ?';
 
-class Building {
-    constructor(id, name, address) {
-        this.id = id;
-        this.name = name;
-        this.address = address;
+class User {
+    constructor(username, password) {
+        this.username = username;
+        this.password = password;
     }
 
-    static getBuildingById(id) {
+    static getUserByUserName(username) {
         return new Promise(function (resolve, reject) {
-            db.query(GET_BUILDING_BY_ID, [id], function (error, results) {
+            db.query(GET_USER_BY_USERNAME, [username], function (error, results) {
                 if (error) {
                     reject(error);
                 } else {
                     try {
                         if (results && results.length > 0) {
-                            const { id, name, address } = results[0];
-                            resolve(new Building(id, name, address));
+                            const { username, password } = results[0];
+                            resolve(new User(username, password));
                         } else {
                             resolve(null);
                         }
@@ -34,28 +32,7 @@ class Building {
         })
     }
 
-    static getBuildingByName(name) {
-        return new Promise(function (resolve, reject) {
-            db.query(GET_BUILDING_BY_NAME, [name], function (error, results) {
-                if (error) {
-                    reject(error);
-                } else {
-                    try {
-                        if (results && results.length > 0) {
-                            const { id, name, address } = results[0];
-                            resolve(new Building(id, name, address));
-                        } else {
-                            resolve(null);
-                        }
-                    } catch (err) {
-                        reject(err);
-                    }
-                }
-            });
-        })
-    }
-
-    static getAllBuildings() {
+    /*static getAllBuildings() {
         return new Promise(function (resolve, reject) {
             db.query(GET_ALL_BULDINGS, function (error, results) {
                 if (error) {
@@ -72,9 +49,9 @@ class Building {
                 }
             });
         })
-    }
+    }*/
 
-    static create(parms) {
+    /*static create(parms) {
         return new Promise((resolve, rejected) => {
             const { name, address } = parms;
             const newBuilding = {
@@ -93,9 +70,9 @@ class Building {
                 }
             })     
         });
-    }
+    }*/
     
-    static update(parms) {
+    /*static update(parms) {
         return new Promise((resolve, rejected) => {
             const { id, name, address } = parms;
             db.query(UPDATE_BUILDING, [name, address, id], (error, results) => {
@@ -110,9 +87,9 @@ class Building {
                 }
             })
         });
-    }
+    }*/
 
-    static delete(id) {
+    /*static delete(id) {
         return new Promise((resolve, rejected) => {
             db.query(DELETE_BUILDING, [id], (error, results) => {
                 if (error) {
@@ -126,7 +103,7 @@ class Building {
                 }
             })
         });
-    }
+    }*/
 }
 
-module.exports = Building;
+module.exports = User;
