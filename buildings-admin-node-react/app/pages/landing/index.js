@@ -7,7 +7,6 @@ const View = require('./view');
 // https://www.digitalocean.com/community/tutorials/react-react-router-ssr
 
 router.get('/*', (req, res, next) => {
-    console.log('entré al landing')
     const initialState = {};    
     const context = {};
 

@@ -83,6 +83,23 @@ const deleteUser = (req, res, next) => {
 
 }
 
+const changeUserPassword = (req, res, next) => {
+    const currentUser = req.session.user;
+    req.body = {
+        ...req.body,
+        user: currentUser
+    }
+    services.changePassword(req.body)
+        .then((result) => {
+            res.status(result.status);
+            res.json(result);
+        })
+        .catch((error) => {
+            next(error);
+        });
+
+}
+
 module.exports = {
     login,
     logout,
@@ -90,5 +107,6 @@ module.exports = {
     getUserById,
     createUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    changeUserPassword
 }

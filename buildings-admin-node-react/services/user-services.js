@@ -174,7 +174,6 @@ const update = async (parms) => {
                     password: user.password
                 }
             }
-            console.log(parms);
             const updatedUser = await User.update(parms);
             return {
                 status: 200,
@@ -183,6 +182,44 @@ const update = async (parms) => {
                 data: updatedUser
             };
         }
+    } catch (error) {
+        throw (error);
+    }
+}
+
+const changePassword = async (parms) => {
+    try {
+        const { user, password, newPassword } = parms;
+
+        const bdUser = await User.getUserById(user.id);
+        if (!bdUser) {
+            return {
+                status: 400,
+                success: false,
+                message: `No existe un usuario con el ID ${id}`
+            }
+        }else{
+            var hashPassword = crypto.createHash('md5').update(password).digest("hex");
+            if (hashPassword != bdUser.password){
+                return {
+                    status: 400,
+                    success: false,
+                    message: `Password incorrecto`
+                }
+            }else{
+                var newHashPassword = crypto.createHash('md5').update(newPassword).digest("hex");
+                parms.password = newHashPassword;
+                parms.id = user.id;
+                
+                const changedUser = await User.changePassword(parms);
+                return {
+                    status: 200,
+                    success: true,
+                    message: 'OK',
+                    data: changedUser
+                };
+            }
+        }  
     } catch (error) {
         throw (error);
     }
@@ -221,5 +258,6 @@ module.exports = {
     getUserById,
     create,
     update,
-    deleted
+    deleted,
+    changePassword
 }

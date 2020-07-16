@@ -20,8 +20,8 @@ router.get('/*', (req, res, next) => {
     );
 
     res.render('template', {
-        pageName: 'users',
-        pageTitle: 'Users',
+        pageName: 'profile',
+        pageTitle: 'Profile',
         host: 'http://localhost:3000',
         initialState,
         content

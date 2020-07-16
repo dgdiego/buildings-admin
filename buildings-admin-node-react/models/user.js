@@ -4,6 +4,7 @@ const GET_USER_BY_ID = 'SELECT * FROM users WHERE id = ?';
 const GET_ALL_USERS = 'SELECT * FROM users';
 const INSERT_USER = 'INSERT INTO users SET ?';
 const UPDATE_USER = 'UPDATE users SET username = ?, password = ?, isAdmin = ? WHERE id = ?';
+const CHANGE_USER_PASSWORD = 'UPDATE users SET password = ? WHERE id = ?';
 const DELETE_USER = 'DELETE FROM users WHERE id = ?';
 
 class User {
@@ -122,6 +123,23 @@ class User {
                 } else {
                     try {
                         resolve('true');
+                    } catch (err) {
+                        rejected(err);
+                    }
+                }
+            })
+        });
+    }
+
+    static changePassword(parms) {
+        return new Promise((resolve, rejected) => {
+            const { id, password} = parms;
+            db.query(CHANGE_USER_PASSWORD, [password, id], (error, results) => {
+                if (error) {
+                    rejected(error);
+                } else {
+                    try {
+                        resolve(new User(id, password));
                     } catch (err) {
                         rejected(err);
                     }

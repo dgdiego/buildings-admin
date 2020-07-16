@@ -8,6 +8,7 @@ const fundsRouter = require('./funds');
 const usersRouter = require('./users');
 const loginRouter = require('./login');
 const logoutRouter = require('./logout');
+const profileRouter = require('./profile');
 const { apiErrorHandler } = require('../middlewares/error-handler');
 const { apiAutentication, apiUserCan } = require('../middlewares/permission');
 
@@ -17,6 +18,7 @@ router.use(apiAutentication, apiUserCan);
 //api routes
 router.use('/login', loginRouter);
 router.use('/logout', logoutRouter);
+router.use('/profile', profileRouter);
 router.use('/buildings', buildingRouter);
 router.use('/contributionTypes', contributionTypesRouter);
 router.use('/apartaments/', apartamentsRouter);

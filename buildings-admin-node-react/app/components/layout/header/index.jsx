@@ -25,6 +25,9 @@ class Header extends React.Component {
                                     <a class="nav-link" href="/users">Usuarios </a>
                                 </li>
                             :''}
+                            <li class={`nav-item ${pathname == 'profile' ? 'active' : ''}`}>
+                                <a class="nav-link" href="/profile">Mi usuario </a>
+                            </li>
                         </ul>
                         <Logout></Logout>
                     </div>

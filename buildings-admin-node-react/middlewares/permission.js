@@ -25,8 +25,7 @@ const apiAutentication = function (req, res, next) {
 const appAutentication = function (req, res, next) {
     //next();
     const isAutenticated = () => {
-        //agregar ruta del barra
-        if (req.url == '/login' || req.session.user != null) {
+        if (req.url == '/' || req.url == '/login' || req.session.user != null) {
             return true;
         } else {
             return false
