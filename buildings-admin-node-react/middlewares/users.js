@@ -24,8 +24,8 @@ const logout = (req, res, next) => {
 
 }
 
-/*const getAllBuildings = (req, res, next) => {
-    services.getAllBuildings()
+const getAllUsers = (req, res, next) => {
+    services.getAllUsers()
         .then((result) => {
             res.status(result.status);
             res.json(result);
@@ -34,10 +34,10 @@ const logout = (req, res, next) => {
             next(error);
         });
 
-}*/
+}
 
-/*const getBuildingById = (req, res, next) => {
-    services.getBuildingById(req.params.id)
+const getUserById = (req, res, next) => {
+    services.getUserById(req.params.id)
         .then((result) => {
             res.status(result.status);
             res.json(result);
@@ -45,10 +45,9 @@ const logout = (req, res, next) => {
         .catch((error) => {
             next(error);
         });
+}
 
-}*/
-
-/*const createBuilding = (req, res, next) => {
+const createUser = (req, res, next) => {
     services.create(req.body)
         .then((result) => {
             res.status(result.status);
@@ -58,9 +57,9 @@ const logout = (req, res, next) => {
             next(error);
         });
 
-}*/
+}
 
-/*const updateBuilding = (req, res, next) => {
+const updateUser = (req, res, next) => {
     services.update(req.body)
         .then((result) => {
             res.status(result.status);
@@ -70,9 +69,9 @@ const logout = (req, res, next) => {
             next(error);
         });
 
-}*/
+}
 
-/*const deleteBuilding = (req, res, next) => {
+const deleteUser = (req, res, next) => {
     services.deleted(req.body)
         .then((result) => {
             res.status(result.status);
@@ -82,9 +81,14 @@ const logout = (req, res, next) => {
             next(error);
         });
 
-}*/
+}
 
 module.exports = {
     login,
-    logout
+    logout,
+    getAllUsers,
+    getUserById,
+    createUser,
+    updateUser,
+    deleteUser
 }

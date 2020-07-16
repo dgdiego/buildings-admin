@@ -7,7 +7,10 @@ const get = (url) => {
             if (res.status === 401) {
                 window.location = '/login';
             }
-            if (res.status === 500 || res.status === 409 || res.status === 404 || res.status === 400) {
+            if (res.status === 403 || res.status === 500) {
+                window.location = `/error/${res.status}`;
+            }
+            if (res.status === 409 || res.status === 404 || res.status === 400) {
                 /*res.json().then((data) => {
                     reject(data);
                 });*/
@@ -35,7 +38,10 @@ const post = (params) => {
             if (res.status === 401) {
                 window.location = '/login';
             }
-            if (res.status === 500 || res.status === 409 || res.status === 404 || res.status === 400) {
+            if (res.status === 403 || res.status === 500) {
+                window.location = `/error/${res.status}`;
+            }
+            if (res.status === 409 || res.status === 404 || res.status === 400) {
                 res.json().then((data) => {
                     reject(data);
                 });

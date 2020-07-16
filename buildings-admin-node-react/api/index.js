@@ -5,13 +5,14 @@ const apartamentsRouter = require('./apartaments');
 const paymentsRouter = require('./payments');
 const expensesRouter = require('./expenses');
 const fundsRouter = require('./funds');
+const usersRouter = require('./users');
 const loginRouter = require('./login');
 const logoutRouter = require('./logout');
 const { apiErrorHandler } = require('../middlewares/error-handler');
-const { apiAutentication } = require('../middlewares/permission');
+const { apiAutentication, apiUserCan } = require('../middlewares/permission');
 
 //always execute 
-router.use(apiAutentication);
+router.use(apiAutentication, apiUserCan);
 
 //api routes
 router.use('/login', loginRouter);
@@ -22,6 +23,7 @@ router.use('/apartaments/', apartamentsRouter);
 router.use('/payments/', paymentsRouter);
 router.use('/expenses/', expensesRouter);
 router.use('/funds/', fundsRouter);
+router.use('/users/', usersRouter);
 router.use(apiErrorHandler);
 
 

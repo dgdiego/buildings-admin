@@ -2,6 +2,7 @@ const React = require('react');
 const { Link } = require('react-router-dom');
 const { Redirect } = require('react-router-dom');
 const { get, post } = require('../../../services/restClient');
+const Layout = require('../../layout');
 const moment = require('moment');
 
 class UpdatePayment extends React.Component {
@@ -9,7 +10,7 @@ class UpdatePayment extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            loading:true,
+            loading: true,
             payment: null,
             date: '',
             amount: '',
@@ -28,7 +29,7 @@ class UpdatePayment extends React.Component {
             .then((data) => {
                 this.setState({
                     payment: data.data,
-                    date: moment(data.data.date,'DD/MM/YYYY').format('YYYY-MM-DD'),
+                    date: moment(data.data.date, 'DD/MM/YYYY').format('YYYY-MM-DD'),
                     amount: data.data.amount,
                     loading: false,
                     error: false,
@@ -83,45 +84,61 @@ class UpdatePayment extends React.Component {
     }
 
     render() {
+        const apartament = this.props.location.apartament;
+        const building = this.props.location.building;
+
         if (this.state.loading) {
             return (
-                <div className="container">
-                    <div class="d-flex align-items-center">
-                        <strong>Cargando pago...</strong>
-                        <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+                <Layout>
+                    <div className="container">
+                        <div class="d-flex align-items-center">
+                            <strong>Cargando pago...</strong>
+                            <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+                        </div>
                     </div>
-                </div>
+                </Layout>
             )
         }
         if (this.state.redirect) {
-            return <Redirect to={`/payments/apartament/${this.state.payment.apartament_id}`} />
+            return <Redirect to={`/payments/apartament/${this.state.payment.apartament_id}?building=${building.id}`} />
         }
         return (
             <div>
-                <div className="container">
-                    <div className="py-5">
-                        <h2 className="d-inline">Modificar pago</h2>
-                        <Link to={`/payments/apartament/${this.state.payment.apartament_id}`} ><button type="button" class="btn btn-outline-primary float-right"><i className="fas fa-undo"></i> Volver</button></Link>
-                    </div>
-                    <form onSubmit={this.handleSubmit}>
-                        <div class="form-group">
-                            <label for="date">Fecha</label>
-                            <input type="date" class="form-control col-3" id="date" name="date" value={this.state.date} required onChange={this.handleDateChange} />
+                <Layout>
+                    <div className="container">
+                        <div className="py-5">
+                            <h2 className="d-inline">Modificar pago</h2>
+                            <Link to={`/payments/apartament/${this.state.payment.apartament_id}?building=${building.id}`} ><button type="button" class="btn btn-outline-primary float-right"><i className="fas fa-undo"></i> Volver</button></Link>
                         </div>
-                        <div class="form-group">
-                            <label for="amount">Monto</label>
-                            <input type="number" class="form-control col-3" id="amount" name="amount" value={this.state.amount} required onChange={this.handleAmountChange} />
+                        <div class="card mb-5">
+                            <div class="card-header">
+                                <i className="fas fa-building"></i> {building.name}
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text"><i className="fas fa-map-marker-alt"></i> {building.address}</p>
+                                <p class="card-text"><i className="fas fa-home"></i> {apartament.number} <i className="fas fa-chevron-circle-right"></i> {apartament.type}</p>
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-success">Modificar</button>
-                    </form>
-                    {this.state.error &&
+                        <form onSubmit={this.handleSubmit}>
+                            <div class="form-group">
+                                <label for="date">Fecha</label>
+                                <input type="date" class="form-control col-3" id="date" name="date" value={this.state.date} required onChange={this.handleDateChange} />
+                            </div>
+                            <div class="form-group">
+                                <label for="amount">Monto</label>
+                                <input type="number" class="form-control col-3" id="amount" name="amount" value={this.state.amount} required onChange={this.handleAmountChange} />
+                            </div>
+                            <button type="submit" class="btn btn-success">Modificar</button>
+                        </form>
+                        {this.state.error &&
                             <div className="form-group">
                                 <div class="alert alert-danger" role="alert">
                                     {this.state.message}
                                 </div>
                             </div>
                         }
-                </div>
+                    </div>
+                </Layout>
             </div>
         );
     }

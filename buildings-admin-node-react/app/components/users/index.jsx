@@ -3,30 +3,30 @@ const { Link } = require('react-router-dom');
 const Layout = require('../layout');
 const { get, post } = require('../../services/restClient');
 
-class Buildings extends React.Component {
+class Users extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            buildings: null,
+            users: null,
             loading: true,
             error: false,
             message: '',
-            buildingToDelete: null
+            userToDelete: null
         };
     }
 
     loadData() {
-        get(`/api/buildings/`)
+        get(`/api/users/`)
             .then((data) => {
                 this.setState({
-                    buildings: data.data,
+                    users: data.data,
                     loading: false,
                     error: false,
                 });
             })
             .catch((err) => {
                 this.setState({
-                    buildings: null,
+                    users: null,
                     loading: false,
                     error: true,
                     message: err
@@ -38,23 +38,23 @@ class Buildings extends React.Component {
         this.loadData();
     }
 
-    handleBuildingToDelete(building, event) {
+    handleUserToDelete(user, event) {
         this.setState({
-            buildingToDelete: building
+            userToDelete: user
         })
     }
 
     handleDelete(event) {
         post({
-            url: `/api/buildings/${this.state.buildingToDelete.id}`,
+            url: `/api/users/${this.state.userToDelete.id}`,
             method: 'DELETE',
             headers: { "Content-Type": "application/json; charset=utf-8" },
             body: JSON.stringify({
-                id: this.state.buildingToDelete.id,
+                id: this.state.userToDelete.id,
             })
         }).then((data) => {
             this.setState({
-                buildingToDelete: null,
+                userToDelete: null,
                 error: false
             });
             this.loadData();
@@ -74,25 +74,23 @@ class Buildings extends React.Component {
     }
 
     render() {
-        const buildings = this.state.buildings;
+        const users = this.state.users;
         if (this.state.loading) {
             return (
-                <Layout>
-                    <div className="container">
-                        <div class="d-flex align-items-center">
-                            <strong>Cargando edificio...</strong>
-                            <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
-                        </div>
+                <div className="container">
+                    <div class="d-flex align-items-center">
+                        <strong>Cargando usuarios...</strong>
+                        <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
                     </div>
-                </Layout>
+                </div>
             )
         }
         return (
             <Layout>
                 <div className="container">
                     <div className="py-5">
-                        <h1 className="d-inline">Listado de edificios</h1>
-                        <Link to={`/buildings/create`}><button type="button" class="btn btn-outline-success float-right"><i className="fas fa-plus"></i> Agregar</button></Link>
+                        <h1 className="d-inline">Listado de usuarios</h1>
+                        <Link to={`/users/create`}><button type="button" class="btn btn-outline-success float-right"><i className="fas fa-plus"></i> Agregar</button></Link>
                     </div>
                     {this.state.error &&
                         <div class="alert alert-danger" role="alert">
@@ -103,22 +101,22 @@ class Buildings extends React.Component {
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Edificio</th>
-                                <th scope="col">Dirección</th>
+                                <th scope="col">Username</th>
+                                <th scope="col">Administrador</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             {
-                                buildings.map(building =>
-                                    <tr key={building.id}>
-                                        <th scope="row">{building.id}</th>
-                                        <td><Link to={`/buildings/${building.id}/apartaments`}>{building.name}</Link></td>
-                                        <td>{building.address}</td>
+                                users.map(user =>
+                                    <tr key={user.id}>
+                                        <th scope="row">{user.id}</th>
+                                        <td>{user.username}</td>
+                                        <td>{user.isAdmin ? <i className="fas fa-check-square text-success"></i> : <i className="fas fa-times-circle text-danger"></i>}</td>
                                         <td><span className="float-right">
-                                            <Link to={`/buildings/edit/${building.id}`} title="Editar" className="text-info"><i className="fas fa-edit"></i></Link>
+                                            <Link to={`/users/edit/${user.id}`} title="Editar" className="text-info"><i className="fas fa-edit"></i></Link>
                                             <a href="#" title="Borrar" className="text-danger ml-2"><i className="fas fa-trash-alt"
-                                                onClick={this.handleBuildingToDelete.bind(this, building)}
+                                                onClick={this.handleUserToDelete.bind(this, user)}
                                                 data-toggle="modal" data-target="#staticBackdrop"></i></a>
                                         </span>
                                         </td>
@@ -137,7 +135,7 @@ class Buildings extends React.Component {
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    Seguro desea eliminar el edificio <span className="font-weight-bold">{this.state.buildingToDelete ? this.state.buildingToDelete.name : ''}</span> - Dirección: <span className="font-weight-bold">{this.state.buildingToDelete ? this.state.buildingToDelete.address : ''}</span>?
+                                    Seguro desea eliminar el usuario <span className="font-weight-bold">{this.state.userToDelete ? this.state.userToDelete.username : ''}</span>?
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -152,4 +150,4 @@ class Buildings extends React.Component {
     }
 };
 
-module.exports = Buildings;
+module.exports = Users;

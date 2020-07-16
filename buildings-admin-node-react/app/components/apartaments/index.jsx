@@ -51,9 +51,9 @@ class Apartaments extends React.Component {
                 <div className="container">
                     <div className="py-5">
                         <h2 className="d-inline">Listado de apartamentos</h2>
-                        <Link to={`/buildings/${idBuilding}/apartaments/create`}><button type="button" class="btn btn-outline-success float-right"><i className="fas fa-plus"></i> Agregar</button></Link>
+                        {/*<Link to={`/buildings/${idBuilding}/apartaments/create`}><button type="button" class="btn btn-outline-success float-right"><i className="fas fa-plus"></i> Agregar</button></Link>*/}
                     </div>
-                    <table className="table table-hover">
+                    <table className="table table-hover mb-5">
                         <thead>
                             <tr>
                                 <th scope="col">Apto.</th>
@@ -73,7 +73,7 @@ class Apartaments extends React.Component {
                                             <span className="float-right">
                                                 <a href={`/payments/apartament/${apartament.id}?building=${building.id}`} title="Ver pagos" className="text-success"><i className="fas fa-cash-register"></i></a>
                                                 {/*<Link to={{pathname: `/payments/apartament/${apartament.id}`, building: {building}}} title="Ver pagos" className="text-success"><i className="fas fa-cash-register"></i></Link>*/} 
-                                                <Link to={`/buildings/${idBuilding}/apartaments/${apartament.id}`} title="Editar" className="text-info ml-2"><i className="fas fa-edit"></i></Link>
+                                                {/*<Link to={`/buildings/${idBuilding}/apartaments/${apartament.id}`} title="Editar" className="text-info ml-2"><i className="fas fa-edit"></i></Link>*/}
                                             </span>
                                        </td>
                                     </tr>

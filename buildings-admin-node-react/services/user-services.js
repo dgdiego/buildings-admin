@@ -63,21 +63,21 @@ const logout = (req) => {
     });
 }
 
-/*const getAllBuildings = async () => {
+const getAllUsers = async () => {
     try {
-        const buildings = await Building.getAllBuildings()
-        if (buildings) {
+        const users = await User.getAllUsers()
+        if (users) {
             return {
                 status: 200,
                 success: true,
                 message: 'OK',
-                data: buildings
+                data: users
             };
         } else {
             return {
                 status: 404,
                 success: false,
-                message: `No existen edificios`
+                message: `No existen usuarios`
             };
         }
     }
@@ -85,106 +85,141 @@ const logout = (req) => {
         throw (error);
     }
 
-}*/
+}
 
-/*const create = async (parms) => {
+const getUserById = async (id) => {
     try {
-        const { name } = parms;
-
-        const building = await Building.getBuildingByName(name);
-        if (building) {
-            return {
-                status: 400,
-                success: false,
-                message: `Ya existe un edificio con el nombre ${name}`
-            }
-        } else {
-            const newBuilding = await Building.create(parms);
+        const user = await User.getUserById(id);
+        if (user) {
             return {
                 status: 200,
                 success: true,
                 message: 'OK',
-                data: newBuilding
+                data: user
+            };
+        } else {
+            return {
+                status: 404,
+                success: false,
+                message: `No existe usuario con el ID ${id}`
+            };
+        }
+    }
+    catch (error) {
+        throw error;
+    }
+}
+
+const create = async (parms) => {
+    try {
+        const { username, password } = parms;
+
+        const user = await User.getUserByUserName(username);
+        if (user) {
+            return {
+                status: 400,
+                success: false,
+                message: `Ya existe un usuario con el username ${username}`
+            }
+        } else {
+            var hashPassword = crypto.createHash('md5').update(password).digest("hex");
+            parms = {
+                ...parms,
+                password: hashPassword
+            }
+            const newUser = await User.create(parms);
+            return {
+                status: 200,
+                success: true,
+                message: 'OK',
+                data: newUser
             };
         }
     } catch (error) {
         throw (error);
     }
-}*/
+}
 
-/*const update = async (parms) => {
+const update = async (parms) => {
     try {
-        const { id, name } = parms;
+        const { id, username, newPassword } = parms;
 
-        const building = await Building.getBuildingById(id);
-        if (!building) {
+        const user = await User.getUserById(id);
+        if (!user) {
             return {
                 status: 400,
                 success: false,
-                message: `No existe un edificio con el ID ${id}`
+                message: `No existe un usuario con el ID ${id}`
             }
         } else {
-            if (building.name != name) {
-                const buildingAux = await Building.getBuildingByName(name);
-                if (buildingAux) {
+            if (user.username != username) {
+                const userAux = await User.getUserByUserName(username);
+                if (userAux) {
                     return {
                         status: 400,
                         success: false,
-                        message: `Ya existe un edificio con nombre ${name}`
+                        message: `Ya existe un usuario con username ${username}`
                     }
                 }
             }
-
-            const updatedBuilding = await Building.update(parms);
+            if (newPassword && newPassword != '') {
+                var hashPassword = crypto.createHash('md5').update(newPassword).digest("hex");
+                parms = {
+                    ...parms,
+                    password: hashPassword
+                }
+            }else{
+                parms = {
+                    ...parms,
+                    password: user.password
+                }
+            }
+            console.log(parms);
+            const updatedUser = await User.update(parms);
             return {
                 status: 200,
                 success: true,
                 message: 'OK',
-                data: updatedBuilding
+                data: updatedUser
             };
         }
     } catch (error) {
         throw (error);
     }
-}*/
+}
 
-/*const deleted = async (parms) => {
+const deleted = async (parms) => {
     try {
         const { id } = parms;
 
-        const building = await Building.getBuildingById(id);
-        if (!building) {
+        const user = await User.getUserById(id);
+        if (!user) {
             return {
                 status: 400,
                 success: false,
-                message: `No existe un edificio con el id ${id}`
+                message: `No existe un usuario con el id ${id}`
             }
         } else {
-            const apartaments = await Apartament.getAllApartamentsByBuilding(id);
-            if (apartaments && apartaments.length > 0) {
-                return {
-                    status: 400,
-                    success: false,
-                    message: `El edificio con ID ${id} tiene apartamentos asignados`
-                }
-            }
-            else {
-                const deleted = await Building.delete(id);
-                return {
-                    status: 200,
-                    success: true,
-                    message: 'OK',
-                    data: deleted
-                }
+            const deleted = await User.delete(id);
+            return {
+                status: 200,
+                success: true,
+                message: 'OK',
+                data: deleted
             }
         }
     }
     catch (error) {
         throw (error);
     }
-}*/
+}
 
 module.exports = {
     login,
-    logout
+    logout,
+    getAllUsers,
+    getUserById,
+    create,
+    update,
+    deleted
 }

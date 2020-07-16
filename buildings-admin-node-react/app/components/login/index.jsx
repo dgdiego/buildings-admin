@@ -43,7 +43,7 @@ class Login extends React.Component {
                 password: this.state.password
             })
         }).then((data) => {
-            window.location = '/buildings';
+            window.location = '/home';
         }).catch((err) => {
             this.setState({
                 error: true,

@@ -7,28 +7,18 @@ const View = require('./view');
 // https://www.digitalocean.com/community/tutorials/react-react-router-ssr
 
 router.get('/*', (req, res, next) => {
-    const user = req.session.user;
-    var initialState = {
-        currentUser: {...user}
-    };
+    const initialState = {};
     const context = {};
 
-    if(req.query.building){
-        initialState = {
-            ...initialState,
-            building: req.query.building
-        }
-    }
-
     const content = renderToString(
-        <StaticRouter location={req.url} context={context}>
+        <StaticRouter location={req.originalUrl} context={context}>
             <View initialState={initialState}/>
         </StaticRouter>
     );
 
     res.render('template', {
-        pageName: 'payments',
-        pageTitle: 'Payments',
+        pageName: 'error',
+        pageTitle: 'Error',
         host: 'http://localhost:3000',
         initialState,
         content

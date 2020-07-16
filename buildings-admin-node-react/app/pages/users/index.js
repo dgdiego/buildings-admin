@@ -8,27 +8,20 @@ const View = require('./view');
 
 router.get('/*', (req, res, next) => {
     const user = req.session.user;
-    var initialState = {
+    const initialState = {
         currentUser: {...user}
     };
     const context = {};
 
-    if(req.query.building){
-        initialState = {
-            ...initialState,
-            building: req.query.building
-        }
-    }
-
     const content = renderToString(
-        <StaticRouter location={req.url} context={context}>
+        <StaticRouter location={req.originalUrl} context={context}>
             <View initialState={initialState}/>
         </StaticRouter>
     );
 
     res.render('template', {
-        pageName: 'payments',
-        pageTitle: 'Payments',
+        pageName: 'users',
+        pageTitle: 'Users',
         host: 'http://localhost:3000',
         initialState,
         content

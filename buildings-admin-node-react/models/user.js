@@ -1,26 +1,29 @@
 const db = require('../services/db-connection');
 const GET_USER_BY_USERNAME = 'SELECT * FROM users WHERE username = ?';
-// const GET_ALL_BULDINGS = 'SELECT * FROM buildings';
-// const INSERT_BUILDING = 'INSERT INTO buildings SET ?';
-// const UPDATE_BUILDING = 'UPDATE buildings SET name = ?, address = ? WHERE id = ?';
-// const DELETE_BUILDING = 'DELETE FROM buildings WHERE id = ?';
+const GET_USER_BY_ID = 'SELECT * FROM users WHERE id = ?';
+const GET_ALL_USERS = 'SELECT * FROM users';
+const INSERT_USER = 'INSERT INTO users SET ?';
+const UPDATE_USER = 'UPDATE users SET username = ?, password = ?, isAdmin = ? WHERE id = ?';
+const DELETE_USER = 'DELETE FROM users WHERE id = ?';
 
 class User {
-    constructor(username, password) {
+    constructor(id, username, password, isAdmin) {
+        this.id = id
         this.username = username;
         this.password = password;
+        this.isAdmin = isAdmin;
     }
 
-    static getUserByUserName(username) {
+    static getUserById(id) {
         return new Promise(function (resolve, reject) {
-            db.query(GET_USER_BY_USERNAME, [username], function (error, results) {
+            db.query(GET_USER_BY_ID, [id], function (error, results) {
                 if (error) {
                     reject(error);
                 } else {
                     try {
                         if (results && results.length > 0) {
-                            const { username, password } = results[0];
-                            resolve(new User(username, password));
+                            const { id, username, password, isAdmin } = results[0];
+                            resolve(new User(id, username, password, isAdmin));
                         } else {
                             resolve(null);
                         }
@@ -32,16 +35,37 @@ class User {
         })
     }
 
-    /*static getAllBuildings() {
+    static getUserByUserName(username) {
         return new Promise(function (resolve, reject) {
-            db.query(GET_ALL_BULDINGS, function (error, results) {
+            db.query(GET_USER_BY_USERNAME, [username], function (error, results) {
                 if (error) {
                     reject(error);
                 } else {
                     try {
-                        resolve(results.map((building) => {
-                            const { id, name, address } = building;
-                            return new Building(id, name, address);
+                        if (results && results.length > 0) {
+                            const { id, username, password, isAdmin } = results[0];
+                            resolve(new User(id, username, password, isAdmin));
+                        } else {
+                            resolve(null);
+                        }
+                    } catch (err) {
+                        reject(err);
+                    }
+                }
+            });
+        })
+    }
+
+    static getAllUsers() {
+        return new Promise(function (resolve, reject) {
+            db.query(GET_ALL_USERS, function (error, results) {
+                if (error) {
+                    reject(error);
+                } else {
+                    try {
+                        resolve(results.map((user) => {
+                            const { id, username, password, isAdmin } = user;
+                            return new User(id, username, password, isAdmin);
                         }));
                     } catch (err) {
                         reject(err);
@@ -49,49 +73,50 @@ class User {
                 }
             });
         })
-    }*/
+    }
 
-    /*static create(parms) {
+    static create(parms) {
         return new Promise((resolve, rejected) => {
-            const { name, address } = parms;
-            const newBuilding = {
-                name,
-                address
+            const { username, password, isAdmin } = parms;
+            const newUser = {
+                username,
+                password,
+                isAdmin
             };
-            db.query(INSERT_BUILDING, newBuilding, (error, results) => {
+            db.query(INSERT_USER, newUser, (error, results) => {
                 if (error) {
                     rejected(error);
                 } else {
                     try {
-                        resolve(new Building(results.insertId, name, address));
+                        resolve(new User(results.insertId, username, password, isAdmin));
                     } catch (err) {
                         rejected(err);
                     }
                 }
             })     
         });
-    }*/
+    }
     
-    /*static update(parms) {
+    static update(parms) {
         return new Promise((resolve, rejected) => {
-            const { id, name, address } = parms;
-            db.query(UPDATE_BUILDING, [name, address, id], (error, results) => {
+            const { id, username, password, isAdmin } = parms;
+            db.query(UPDATE_USER, [username, password, isAdmin, id], (error, results) => {
                 if (error) {
                     rejected(error);
                 } else {
                     try {
-                        resolve(new Building(id, name, address));
+                        resolve(new User(id, username, password, isAdmin));
                     } catch (err) {
                         rejected(err);
                     }
                 }
             })
         });
-    }*/
+    }
 
-    /*static delete(id) {
+    static delete(id) {
         return new Promise((resolve, rejected) => {
-            db.query(DELETE_BUILDING, [id], (error, results) => {
+            db.query(DELETE_USER, [id], (error, results) => {
                 if (error) {
                     rejected(error);
                 } else {
@@ -103,7 +128,7 @@ class User {
                 }
             })
         });
-    }*/
+    }
 }
 
 module.exports = User;

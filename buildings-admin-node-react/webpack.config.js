@@ -6,7 +6,10 @@ module.exports = {
         'buildings': './app/client/buildings.js',
         'payments': './app/client/payments.js',
         'login': './app/client/login.js',
-        'home': './app/client/home.js'
+        'home': './app/client/home.js',
+        'users': './app/client/users.js',
+        'error': './app/client/error.js',
+        'landing': './app/client/landing.js'
     },
     devtool: 'eval-source-map',
     module: {

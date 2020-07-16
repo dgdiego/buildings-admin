@@ -7,7 +7,11 @@ const View = require('./view');
 // https://www.digitalocean.com/community/tutorials/react-react-router-ssr
 
 router.get('/*', (req, res, next) => {
-    const initialState = {};
+    const user = req.session.user;
+    const initialState = {
+        currentUser: {...user}
+    };
+    
     const context = {};
 
     const content = renderToString(

@@ -3,11 +3,10 @@ const Logout = require('../../logout')
 
 class Header extends React.Component {
     render() {
-        const pathname = window.location.pathname.replace('/', '');
+        const pathname = window.location.pathname.split('/')[1];
         const currentUser = this.props.currentUser
         return (
             <div>
-                {currentUser.username}
                 <nav class="navbar navbar-expand-lg navbar-light bg-light">
                     <a class="navbar-brand" href="/home"><i className="fas fa-building"></i></a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,11 +20,11 @@ class Header extends React.Component {
                             <li class={`nav-item ${pathname == 'buildings' ? 'active' : ''}`}>
                                 <a class="nav-link" href="/buildings">Edificios </a>
                             </li>
-                            {currentUser.username == 'Administrador' &&
+                            {currentUser.isAdmin ?
                                 <li class={`nav-item ${pathname == 'users' ? 'active' : ''}`}>
                                     <a class="nav-link" href="/users">Usuarios </a>
                                 </li>
-                            }
+                            :''}
                         </ul>
                         <Logout></Logout>
                     </div>

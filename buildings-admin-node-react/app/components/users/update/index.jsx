@@ -4,40 +4,41 @@ const { Redirect } = require('react-router-dom');
 const Layout = require('../../layout');
 const { get, post } = require('../../../services/restClient');
 
-
-class UpdateBuilding extends React.Component {
+class UpdateUser extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            building: null,
+            user: null,
             loading: true,
-            name: '',
-            address: '',
+            username: '',
+            password: '',
+            isAdmin: false,
             redirect: null,
             error: false,
             message: ''
         };
 
-        this.handleNameChange = this.handleNameChange.bind(this);
-        this.handleAddressChange = this.handleAddressChange.bind(this);
+        this.handleUsernameChange = this.handleUsernameChange.bind(this);
+        this.handlePasswordChange = this.handlePasswordChange.bind(this);
+        this.handleIsAdminChange = this.handleIsAdminChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     componentDidMount() {
-        get(`/api/buildings/${this.props.id}`)
+        get(`/api/users/${this.props.id}`)
             .then((data) => {
                 this.setState({
-                    building: data.data,
-                    name: data.data.name,
-                    address: data.data.address,
+                    user: data.data,
+                    username: data.data.username,
+                    isAdmin: data.data.isAdmin,
                     loading: false,
                     error: false,
                     message: '',
                 });
             }).catch((err) => {
                 this.setState({
-                    building: null,
+                    user: null,
                     loading: false,
                     error: true,
                     message: err.message
@@ -45,15 +46,21 @@ class UpdateBuilding extends React.Component {
             });
     }
 
-    handleNameChange(event) {
+    handleUsernameChange(event) {
         this.setState({
-            name: event.target.value
+            username: event.target.value
         });
     }
 
-    handleAddressChange(event) {
+    handlePasswordChange(event) {
         this.setState({
-            address: event.target.value
+            password: event.target.value
+        });
+    }
+
+    handleIsAdminChange(event) {
+        this.setState({
+            isAdmin: event.target.checked
         });
     }
 
@@ -61,13 +68,14 @@ class UpdateBuilding extends React.Component {
         event.preventDefault();
 
         post({
-            url: `/api/buildings/${this.state.building.id}`,
+            url: `/api/users/${this.state.user.id}`,
             method: 'POST',
             headers: { "Content-Type": "application/json; charset=utf-8" },
             body: JSON.stringify({
-                id: this.state.building.id,
-                name: this.state.name,
-                address: this.state.address
+                id: this.state.user.id,
+                username: this.state.username,
+                newPassword: this.state.password,
+                isAdmin: this.state.isAdmin
             })
         }).then((data) => {
             this.setState({
@@ -88,7 +96,7 @@ class UpdateBuilding extends React.Component {
                 <Layout>
                     <div className="container">
                         <div class="d-flex align-items-center">
-                            <strong>Cargando edificio...</strong>
+                            <strong>Cargando usuairo...</strong>
                             <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
                         </div>
                     </div>
@@ -96,24 +104,30 @@ class UpdateBuilding extends React.Component {
             )
         }
         if (this.state.redirect) {
-            return <Redirect to="/buildings" />
+            return <Redirect to="/users" />
         }
         return (
             <div>
                 <Layout>
                     <div className="container">
                         <div className="py-5">
-                            <h2 className="d-inline">Editar edificio</h2>
-                            <Link to={`/buildings`}><button type="button" class="btn btn-outline-primary float-right"><i className="fas fa-undo"></i> Volver</button></Link>
+                            <h2 className="d-inline">Editar usuario</h2>
+                            <Link to={`/users`}><button type="button" class="btn btn-outline-primary float-right"><i className="fas fa-undo"></i> Volver</button></Link>
                         </div>
                         <form onSubmit={this.handleSubmit}>
                             <div class="form-group">
-                                <label for="name">Nombre</label>
-                                <input type="text" class="form-control col-3" id="name" name="name" value={this.state.name} required onChange={this.handleNameChange} />
+                                <label for="name">Username</label>
+                                <input type="text" class="form-control col-3" id="username" name="username" value={this.state.username} required onChange={this.handleUsernameChange} />
                             </div>
                             <div class="form-group">
-                                <label for="address">Dirección</label>
-                                <input type="text" class="form-control col-6" id="address" name="address" value={this.state.address} required onChange={this.handleAddressChange} />
+                                <label for="address">Nuevo Password</label>
+                                <input type="password" class="form-control col-6" id="password" name="password" value={this.state.password} onChange={this.handlePasswordChange} />
+                            </div>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="isAdminUser" onChange={this.handleIsAdminChange} checked={this.state.isAdmin} />
+                                    <label class="form-check-label" for="isAdminUser">Administrador</label>
+                                </div>
                             </div>
                             <button type="submit" class="btn btn-success">Editar</button>
                         </form>
@@ -131,4 +145,4 @@ class UpdateBuilding extends React.Component {
     }
 };
 
-module.exports = UpdateBuilding;
+module.exports = UpdateUser;
