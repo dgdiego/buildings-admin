@@ -6,8 +6,4 @@ Aplicación en carpeta: buildings-admin-node-react
 
 # BD
 Base de datos bd-building-admin
-
-Usuario - contraseña
-dgdiego - dgdiego
-admin - admin1234
-otrouser - otrouser
+Usuario:dgdiego - password:dgdiego | Usuario: admin - password: admin1234 | Usuario: otrouser - password: otrouse
