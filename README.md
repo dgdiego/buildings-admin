@@ -1,9 +1,10 @@
 # buildings-admin
 Senpai - Proyecto fin de curso 
 
-Video presentación proyecto:  
-
+# APP
 Aplicación en carpeta: buildings-admin-node-react
+
+# BD
 Base de datos bd-building-admin
 
 Usuario - contraseña
